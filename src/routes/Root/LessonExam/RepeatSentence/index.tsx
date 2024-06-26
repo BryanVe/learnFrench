@@ -10,95 +10,87 @@ import {
   Text,
   Title,
   Tooltip,
-} from "@mantine/core";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Icon } from "~/components";
-import useSpeechRecognition from "./voice-interface";
-import useSpeechHandler from "./textToVoice";
+} from "@mantine/core"
+import { useState } from "react"
+import { useNavigate } from "react-router-dom"
+import { Icon } from "~/components"
+import useSpeechRecognition from "./voice-interface"
+import useSpeechHandler from "./textToVoice"
 
 const question = {
   type: "repeat_sentece",
   content: "Bonjour! ça va?",
   feedback: "feedback",
-};
+}
 
 type RepeatSentenceLessonProps = {
-  question: typeof question;
-  goToNextQuestion: () => void;
-};
+  question: typeof question
+  goToNextQuestion: () => void
+}
 
 const textSpeechProcesing = (text: string, sentence: string) => {
-  if (text.length === 0) return false;
-  const textClean = cleanSymbols(sentence);
-  return text === textClean;
+  if (text.length === 0) return false
+  const textClean = cleanSymbols(sentence)
+  return text === textClean
   // if (text === textClean) {
   //   return true;
   // }
   // return false;
-};
+}
 
 const cleanSymbols = (cadena: string) => {
-  cadena = cadena.toLowerCase();
-  return cadena.replace(/[!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]/g, "");
-};
+  cadena = cadena.toLowerCase()
+  return cadena.replace(/[!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]/g, "")
+}
 const RepeatSentenceLesson = ({
   question,
   goToNextQuestion,
 }: RepeatSentenceLessonProps) => {
-  const navigate = useNavigate();
-  const sentence = "Bonjour! ça va?";
+  const navigate = useNavigate()
+  const sentence = "Bonjour! ça va?"
 
-  const [checkAnswer, setCheckAnswer] = useState(false);
-  const { readText, isSpeaking } = useSpeechHandler();
+  const [checkAnswer, setCheckAnswer] = useState(false)
+  const { readText, isSpeaking } = useSpeechHandler()
   const {
     text,
     isListening,
     startListening,
     stopListening,
     hasRecognitionSupport,
-  } = useSpeechRecognition();
-  const isMicrophoneOn = Boolean(text);
-  const validation = textSpeechProcesing(text, question.content);
+  } = useSpeechRecognition()
+  const isMicrophoneOn = Boolean(text)
+  const validation = textSpeechProcesing(text, question.content)
   // const [isSpeaking, setIsSpeaking] = useState(false);/*  */
 
   return (
-    // <div></div>
-    <Flex direction="column" w="100%" h="100vh" p="xl" bg="White.4">
-      <Flex
-        direction="column"
+    <Flex
+      direction="column"
+      gap="sm"
+    >
+      <Group justify="space-between" mb="xl">
+        <Title order={2}>Repite la siguiente oración</Title>
+        <CloseButton
+          style={{ borderRadius: 30, border: "2px solid #093b81" }}
+          size="lg"
+          onClick={() => navigate("/home")}
+        />
+      </Group>
+      <Box
         w="100%"
         mx="auto"
-        maw={1720}
-        h="100vh"
-        py={30}
-        gap="sm"
-        // bg="#fda1a1"
+        maw={1000}
+        p="xs"
+        style={{
+          //   border: "2px solid #DAE1EA",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          //   gap: "10",
+        }}
       >
-        <Group justify="space-between" mb="xl" p="sm">
-          <Title order={2}>Repite la siguiente oración</Title>
-          <CloseButton
-            style={{ borderRadius: 30, border: "2px solid #093b81" }}
-            size="lg"
-            onClick={() => navigate("/home")}
-          />
-        </Group>
-        <Box
-          w="100%"
-          mx="auto"
-          maw={1000}
-          p="xs"
-          h={550}
-          style={{
-            //   border: "2px solid #DAE1EA",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            //   gap: "10",
-          }}
-        >
-          <Group m="sm" w="100%" align="center" justify="flex-end">
+        <Box w='100%' maw={700}>
+          <Group justify="flex-end" mb='sm'>
             <Tooltip label="Gramatica">
               <ActionIcon
                 variant="subtle"
@@ -120,9 +112,6 @@ const RepeatSentenceLesson = ({
           </Group>
           {hasRecognitionSupport ? (
             <Box
-              w="100%"
-              mx="auto"
-              maw={700}
               style={{ border: "2px solid #DAE1EA", borderRadius: 6 }}
               p="xl"
             >
@@ -131,9 +120,9 @@ const RepeatSentenceLesson = ({
                   variant="subtle"
                   aria-label="Settings"
                   onClick={() => {
-                    readText(question.content);
+                    readText(question.content)
                   }}
-                  // disabled={isSpeaking() ? true : false}
+                // disabled={isSpeaking() ? true : false}
                 >
                   <Icon type="speaker" size={30}></Icon>
                 </ActionIcon>
@@ -147,7 +136,7 @@ const RepeatSentenceLesson = ({
                 </Button> */}
                 <Text>{question.content}</Text>
               </Group>
-              <Group justify="center" mb="sm">
+              <Group justify="center">
                 {isListening ? (
                   <ActionIcon
                     variant="subtle"
@@ -171,7 +160,7 @@ const RepeatSentenceLesson = ({
                     <Icon
                       type="microphone"
                       size={30}
-                      // color={isListening ? "#ff5555" : "#23559a"}
+                    // color={isListening ? "#ff5555" : "#23559a"}
                     ></Icon>
                   </ActionIcon>
                 )}
@@ -192,53 +181,38 @@ const RepeatSentenceLesson = ({
           ) : (
             <Text>No tiene soporte uwu</Text>
           )}
-
-          <Button
-            my="xl"
-            onClick={() => {
-              // navigate("/questionLesson");
-              checkAnswer ? goToNextQuestion() : setCheckAnswer(true);
-            }}
-            disabled={isListening}
-          >
-            {checkAnswer ? "Continuar" : "Verificar"}
-          </Button>
-
-          <Stack w="100%" align="center" mt={120}>
-            <Text>40%</Text>
-            <Progress
-              w="100%"
-              radius="xl"
-              size="lg"
-              value={20}
-              color="ToreaBay.8"
-            />
-          </Stack>
         </Box>
-        {checkAnswer && (
-          <Box
-            w="100%"
-            mx="auto"
-            p="lg"
-            h="150"
-            mt="xl"
-            style={{
-              border: "2px solid #DAE1EA",
-              borderRadius: 6,
-              display: "flex",
-              flexDirection: "column",
-              // alignItems: "center",
-              justifyContent: "space-around",
-              // gap: "10",
-            }}
-          >
-            <Text>{validation ? "Correcto" : "Incorrecto"}</Text>
-            <Text>{question.feedback}</Text>
-          </Box>
-        )}
-      </Flex>
+        <Button
+          mt="lg"
+          onClick={() => {
+            // navigate("/questionLesson");
+            checkAnswer ? goToNextQuestion() : setCheckAnswer(true)
+          }}
+          disabled={isListening}
+        >
+          {checkAnswer ? "Continuar" : "Verificar"}
+        </Button>
+      </Box>
+      {checkAnswer && (
+        <Box
+          mt='lg'
+          p="xl"
+          style={{
+            border: "2px solid #DAE1EA",
+            borderRadius: 6,
+            display: "flex",
+            flexDirection: "column",
+            // alignItems: "center",
+            justifyContent: "space-around",
+            // gap: "10",
+          }}
+        >
+          <Text>{validation ? "Correcto" : "Incorrecto"}</Text>
+          <Text>{question.feedback}</Text>
+        </Box>
+      )}
     </Flex>
-  );
-};
+  )
+}
 
-export default RepeatSentenceLesson;
+export default RepeatSentenceLesson

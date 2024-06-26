@@ -7,5 +7,5 @@ export const getLevels = async () => {
 
 export const getSublevels = async () => {
     const response = await axiosInstance.get(`/api/all-sublevels`)
-    return response.data
+    return response.data as Record<string, SubLevel>
 }

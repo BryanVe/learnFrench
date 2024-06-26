@@ -1,46 +1,46 @@
-import { useState } from "react";
-import CompleteSentenceLesson from "./CompleteSentence";
-import { Button } from "@mantine/core";
-import OrderSentenceLesson from "./OrderSentence";
-import RepeatSentenceLesson from "./RepeatSentence";
-import FinishLesson from "./CompleteLesson";
-import CompleteTextQuestion from "./CompleteTextLesson";
+import { useState } from "react"
+import CompleteSentenceLesson from "./CompleteSentence"
+import { Box, Button, Center, Flex, Progress, Stack, Text } from "@mantine/core"
+import OrderSentenceLesson from "./OrderSentence"
+import RepeatSentenceLesson from "./RepeatSentence"
+import FinishLesson from "./CompleteLesson"
+import CompleteTextQuestion from "./CompleteTextLesson"
 
 type TCompleteWithOptionsQuestion = {
-  type: "complete_with_options";
-  content: string;
+  type: "complete_with_options"
+  content: string
   options: {
-    content: string;
-    right: boolean;
-    feedback: string;
-  }[];
-};
+    content: string
+    right: boolean
+    feedback: string
+  }[]
+}
 
 type TOrderSentenceQuestion = {
-  type: "order_sentence";
-  content: string;
-  answer: string;
-  feedback: string;
-};
+  type: "order_sentence"
+  content: string
+  answer: string
+  feedback: string
+}
 
 type TCompleteWithTextQuestion = {
-  type: "complete_with_text";
-  content: string;
-  answer: string;
-  feedback: string;
-};
+  type: "complete_with_text"
+  content: string
+  answer: string
+  feedback: string
+}
 
 type TRepeatSentenceQuestion = {
-  type: "repeat_sentence";
-  content: string;
-  feedback: string;
-};
+  type: "repeat_sentence"
+  content: string
+  feedback: string
+}
 
 type TLessonQuestion =
   | TCompleteWithOptionsQuestion
   | TOrderSentenceQuestion
   | TCompleteWithTextQuestion
-  | TRepeatSentenceQuestion;
+  | TRepeatSentenceQuestion
 
 const questions: TLessonQuestion[] = [
   {
@@ -83,23 +83,23 @@ const questions: TLessonQuestion[] = [
     content: "Bonjour! ça va?",
     feedback: "feedback",
   },
-];
+]
 
 const LessonExam = () => {
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  // const navigate = useNavigate();
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
+  const progressPercentage = parseFloat(
+    ((currentQuestionIndex / questions.length) * 100).toFixed(2)
+  )
 
   const goToNextQuestion = () => {
-    setCurrentQuestionIndex(currentQuestionIndex + 1);
-  };
+    setCurrentQuestionIndex(currentQuestionIndex + 1)
+  }
   const goToPreviousQuestion = () =>
-    setCurrentQuestionIndex(currentQuestionIndex - 1);
+    setCurrentQuestionIndex(currentQuestionIndex - 1)
 
   const renderLesson = () => {
-    console.log(currentQuestionIndex, questions.length);
-
-    const currentQuestion = questions[currentQuestionIndex];
-    if (currentQuestionIndex === questions.length) return;
+    const currentQuestion = questions[currentQuestionIndex]
+    if (currentQuestionIndex === questions.length) return
 
     if (currentQuestion.type === "complete_with_options")
       return (
@@ -108,7 +108,7 @@ const LessonExam = () => {
           question={currentQuestion}
           goToNextQuestion={goToNextQuestion}
         />
-      );
+      )
 
     if (currentQuestion.type === "order_sentence")
       return (
@@ -117,7 +117,7 @@ const LessonExam = () => {
           question={currentQuestion}
           goToNextQuestion={goToNextQuestion}
         />
-      );
+      )
 
     if (currentQuestion.type === "complete_with_text")
       return (
@@ -126,7 +126,7 @@ const LessonExam = () => {
           question={currentQuestion}
           goToNextQuestion={goToNextQuestion}
         />
-      );
+      )
 
     if (currentQuestion.type === "repeat_sentence")
       return (
@@ -135,17 +135,27 @@ const LessonExam = () => {
           question={currentQuestion}
           goToNextQuestion={goToNextQuestion}
         />
-      );
-  };
+      )
+  }
 
   return (
-    <div>
-      {renderLesson()}
-      {currentQuestionIndex === questions.length && <FinishLesson />}
-      <Button onClick={goToPreviousQuestion}>Ant pregunta</Button>
-      <Button onClick={goToNextQuestion}>Sgt pregunta</Button>
-    </div>
-  );
-};
+    <Center bg="White.4" h='100dvh'>
+      <Box w='100%' p='xl' maw={900}>
+        {renderLesson()}
+        {currentQuestionIndex === questions.length && <FinishLesson />}
+        <Stack w="100%" align="center" mt='xl' mb={120}>
+          <Progress
+            w="100%"
+            radius="xl"
+            size="lg"
+            value={progressPercentage}
+            color="ToreaBay.8"
+          />
+          <Text>{progressPercentage}%</Text>
+        </Stack>
+      </Box>
+    </Center>
+  )
+}
 
-export default LessonExam;
+export default LessonExam
